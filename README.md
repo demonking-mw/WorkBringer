@@ -41,4 +41,4 @@ https://jeltef.github.io/PyLaTeX/current/
 
 
 venv activate:
-venv\Scripts\activate.bat
+.\venv\Scripts\Activate.ps1

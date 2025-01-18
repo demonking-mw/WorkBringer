@@ -90,7 +90,7 @@ if __name__ == "__main__":
         person_info="Software Engineer with 5 years of experience",
         sect_info_list=[
             ("Education", 3, [
-                (["B.Sc in Computer Science", "University XYZ", "2015-2019"], ["Graduated with honors", "GPA: 3.8/4.0"]),
+                (["B.Sc in Computer Science", "University XYZ", "2015-2019"], ["Graduated xwith honors", "GPA: 3.8/4.0"]),
                 (["M.Sc in Computer Science", "University ABC", "2019-2021"], ["Thesis on AI", "GPA: 4.0/4.0"])
             ]),
             ("Experience", 4, [

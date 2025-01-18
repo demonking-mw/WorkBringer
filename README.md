@@ -35,6 +35,12 @@ NOTE FOR STYLEINFO:
 Need to change to encorporate different types of sections
 
 
+Attributes: 3 categories
+Tech skill: skills within field, often desired. 
+Soft skill: hard-to-quantify
+Tangent skill: not often desired, but if required then it sets the person apart
+
+
 LATEX GEN:
 https://jeltef.github.io/PyLaTeX/current/
 

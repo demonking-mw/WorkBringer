@@ -34,3 +34,11 @@ StyleInfo(style_id=123, section_attributes=SectionAttributes(...(default behavio
 NOTE FOR STYLEINFO:
 Need to change to encorporate different types of sections
 
+
+LATEX GEN:
+https://jeltef.github.io/PyLaTeX/current/
+
+
+
+venv activate:
+venv\Scripts\activate.bat

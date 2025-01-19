@@ -41,6 +41,7 @@ class ResumeBuilder:
             result.append(new_frame)
         return result, lines
 
+    '''
     def build_skills(self, skills_info: resume_info.AuxSectionsInfo) -> list:
         """
         Builds the content list for a section that uses skills format
@@ -81,6 +82,7 @@ class ResumeBuilder:
             )
             section_content.append(content_1)
         return section_content
+    '''
 
     def build_standard_content_section(self, standard_sec) -> list:
         """
@@ -89,22 +91,27 @@ class ResumeBuilder:
         Comm: takes in a standard section
         """
         section_content = []
-        curr_title = standard_sec.title
+        curr_title = standard_sec.titles
         # Edit the title if necessary
         section_title_1 = Paragraph(curr_title, standard_sec.font_title)
         section_content.append(section_title_1)
-        for content in standard_sec.info_list:
-            if standard_sec.section_style.attributes.item_heading_type != 0:
-                content_title_1 = Paragraph(content[0], standard_sec.font_subtitle)
-                content_title_2 = Paragraph(content[1], standard_sec.font_subright)
+        for item_content in standard_sec.sect_info.all_info:
+            headers = item_content[0]
+            content = item_content[1]
+            if len(headers) != 0:
+                content_title_1 = Paragraph(headers[0], standard_sec.font_subtitle)
+                content_title_2 = Paragraph(headers[1], standard_sec.font_subright)
                 section_content.append(content_title_1)
                 section_content.append(content_title_2)
-            if standard_sec.section_style.attributes.item_heading_type > 3:
-                content_title_3 = Paragraph(content[2], standard_sec.font_subtitle2)
-                content_title_4 = Paragraph(content[3], standard_sec.font_subright2)
+            if len(headers) > 3:
+                content_title_3 = Paragraph(headers[2], standard_sec.font_subtitle2)
+                content_title_4 = Paragraph(headers[3], standard_sec.font_subright2)
                 section_content.append(content_title_3)
                 section_content.append(content_title_4)
-            content_para = Paragraph(content[2], standard_sec.font_text)
+            context = ""
+            for item in content:
+                context += item
+            content_para = Paragraph(context, standard_sec.font_text)
 
             section_content.append(content_para)
         return section_content
@@ -138,13 +145,13 @@ class ResumeBuilder:
         custom_space = Spacer(width=0, height=header_container.top_space)
         title_text = Paragraph(
             header_container.title,
-            self.resume_style.subsections["HEADING"]
+            self.resume_style.subsections[0]
             .subsections["heading_name_font"]
             .get_paragraph_style(),
         )
         basic_info_text = platypus.Paragraph(
             header_container.header_basic_info,
-            self.resume_style.subsections["HEADING"]
+            self.resume_style.subsections[0]
             .subsections["heading_desc_font"]
             .get_paragraph_style(),
         )
@@ -169,20 +176,19 @@ class ResumeBuilder:
     def __init__(
         self,
         target_pdf_name: str,
-        overall_side_margin: int,
-        info_folder: str,
         all_resume_info: standard_section.SectInfo,
         job_sum: str,
         job_resp: str,
         job_req: str,
+        overall_side_margin: int = 10,
         all_job_info: str = "",
         gpt_model: str = "gpt-4o-mini",
     ) -> None:
+        
         self.pdf_name = target_pdf_name
         self.side_margin = overall_side_margin
         self.resume_informations = resume_info.ResumeInfo(
             all_resume_info,
-            info_folder,
             gpt_model,
             job_sum,
             job_resp,

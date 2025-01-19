@@ -26,8 +26,8 @@ class SectInfo:
 
     title: str
     all_info: list[list[list]]
-    sec_style: style_info.StyleInfo = None
-    bullet_point: bool
+    sect_style: style_info.StyleInfo = None
+    bullet_point: bool = True
 
 
 class StandardSectionInfo:
@@ -47,60 +47,58 @@ class StandardSectionInfo:
     # __WRAP_FORGIVE = 20
     #######################################################################
 
-    def __init__(self, sec_info: SectionInfo) -> None:
-        if sect_info.sec_style is None:
-            self.section_style = sec_style = (
-                styles.ALlStyles().resume_style_0.subsections[title]
-            )
-        else:
-            self.section_style = sec_info.sec_style
-
-        self.titles = sec_info.title
-        self.pure_info_list = sec_info.all_info
+    def __init__(self, sect_info: SectInfo) -> None:
+        print("DEBUG")
+        print(sect_info.title)
+        self.sect_style = styles.ALlStyles().resume_style_0.subsections[2]
+        
+        self.sect_info = sect_info
+        self.titles = sect_info.title
+        self.pure_info_list = sect_info.all_info
         self.attribute_weight_list = []
 
         # self.all_fonts = fonts.AllFonts()
 
-        self.font_title_style = self.section_style.subsections["title_font"]
+        self.font_title_style = self.sect_style.subsections["title_font"]
         self.font_title = self.font_title_style.get_paragraph_style()
         # self.font_title = self.all_fonts.name_font
 
-        self.font_subtitle_style = self.section_style.subsections["subtitle_font"]
+        self.font_subtitle_style = self.sect_style.subsections["subtitle_font"]
         self.font_subtitle = self.font_subtitle_style.get_paragraph_style()
         # self.font_subtitle = self.all_fonts.subsection_title
 
-        self.font_subright_style = self.section_style.subsections["subright_font"]
+        self.font_subright_style = self.sect_style.subsections["subright_font"]
         self.font_subright2 = self.font_subright_style.get_paragraph_style()
         # self.font_subright = self.all_fonts.subright_title
 
-        self.font_subtitle2_style = self.section_style.subsections["subtitle2_font"]
+        self.font_subtitle2_style = self.sect_style.subsections["subtitle2_font"]
         self.font_subtitle2 = self.font_subtitle2_style.get_paragraph_style()
         # self.font_subtitle = self.all_fonts.subsection_title
 
-        self.font_subright2_style = self.section_style.subsections["subright2_font"]
+        self.font_subright2_style = self.sect_style.subsections["subright2_font"]
         self.font_subright2 = self.font_subright2_style.get_paragraph_style()
 
-        self.font_text_style = self.section_style.subsections["standard_text_font"]
+        self.font_text_style = self.sect_style.subsections["standard_text_font"]
         self.font_text = self.font_text_style.get_paragraph_style()
         # self.font_text = self.all_fonts.text_font_standard_sec
 
-        self.side_margin = self.section_style.section_attributes.side_margin
+        self.side_margin = self.sect_style.section_attributes.side_margin
         # self.side_margin = self.__DEFAULT_SIDE_MARGIN
 
-        self.top_margin = self.section_style.section_attributes.top_margin
+        self.top_margin = self.sect_style.section_attributes.top_margin
         # self.top_margin = self.__DEFAULT_TOP_MARGIN
 
-        self.bullet_point = sec_info.bullet_point
+        self.bullet_point = sect_info.bullet_point
         # if bullet_point:self.bullet_point = bullet_point
 
-        self.height_buffer = self.section_style.section_attributes.height_buffer
+        self.height_buffer = self.sect_style.section_attributes.height_buffer
         # if height_buffer:self.height_buffer = height_buffer
         if self.bullet_point:
             self.info_list, self.attribute_weight_list = self.parse_bullet()
         else:
             self.info_list, self.attribute_weight_list = self.parse_regular()
 
-        self.wrap_forgive = self.section_style.section_attributes.wrap_forgive
+        self.wrap_forgive = self.sect_style.section_attributes.wrap_forgive
         self.total_height, self.empty_height, self.sub_height_list = (
             self.get_height_section()
         )
@@ -115,8 +113,8 @@ class StandardSectionInfo:
         result_list = []
         attribute_list = []
         bull_0 = "• "
-        if self.section_style.section_attributes.bullet_symbol is not None:
-            bull_0 = self.section_style.section_attributes.bullet_symbol
+        if self.sect_style.section_attributes.bullet_symbol is not None:
+            bull_0 = self.sect_style.section_attributes.bullet_symbol
         bull_1 = "<br/>"
         result_list = []
         for item in self.pure_info_list:
@@ -134,11 +132,12 @@ class StandardSectionInfo:
         """
         result_list = []
         attribute_list = []
-        bull_0 = "• "
-        if self.section_style.section_attributes.bullet_symbol is not None:
-            bull_0 = self.section_style.section_attributes.bullet_symbol
         bull_1 = "<br/>"
-        sec_type = self.section_style.section_attributes.item_heading_type
+        
+        if self.sect_style.section_attributes.bullet_symbol is not None:
+            bull_0 = self.sect_style.section_attributes.bullet_symbol
+        
+        sect_type = self.sect_style.section_attributes.item_heading_type
         result_list = []
         for item in self.pure_info_list:
             attribute_list.append(item[2])
@@ -169,35 +168,35 @@ class StandardSectionInfo:
             print("Title: " + information[0] + ";   " + information[1])
             print("Info: " + information[2] + "\n")
 
-    def get_height_subsection_index(self, sec_index: int) -> int:
+    def get_height_subsection_index(self, sect_index: int) -> int:
         """
         Get the height of a subsection
         Reference by its index
         """
-        subsection = self.info_list[sec_index]
+        subsection = self.info_list[sect_index]
         return self.get_height_subsection_list(subsection)
 
-    def get_height_subsection_list(self, sec_list: list) -> int:
+    def get_height_subsection_list(self, targ_sect_list: list) -> int:
         """
         Get the height of a subsection
         the subsection is taken in as input
         """
-        subsection = sec_list
+        subsection = targ_sect_list
         total_h = 0
-        sec_type = self.section_style.section_attributes.item_heading_type
+        sect_type = len(targ_sect_list[0])
         # subsection title, NOW MULTI LINE COOKING YAY:
-        if sec_type > 0:
+        if sect_type > 0:
             total_h += self.font_subright_style.font_attributes.leading
             total_h += self.font_subtitle_style.font_attributes.space_before
 
-        if sec_type > 3:
+        if sect_type > 3:
             total_h += self.font_subright2_style.font_attributes.leading
             total_h += self.font_subtitle2_style.font_attributes.space_before
 
         line_width = A4[0] - 2 * self.side_margin - self.wrap_forgive - 15
         num_of_len = 0
         content_start = 0
-        for line in self.info_list[sec_index][1]:
+        for line in subsection[1]:
             point_len = stringWidth(
                 line,
                 self.font_text.fontName,
@@ -226,7 +225,7 @@ class StandardSectionInfo:
         # section title:
         total_height += self.font_title_style.font_attributes.font_size
         if self.bullet_point:
-            for subsection in self.raw_info_list:
+            for subsection in self.info_list:
                 total_height += self.get_height_subsection_list(subsection)
                 sub_hlist.append(self.get_height_subsection_list(subsection))
         else:

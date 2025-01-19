@@ -45,10 +45,12 @@ class GPT_Attribute:
             result += "JOB RESPONSIBILITIES: "
             result += self.job_resp + "\n"
             result += "REQUIRED SKILL: "
+            
             result += self.job_req + "\n"
         else:
             result = self.all_job_info
-
+        print("DEBUG: JOB DESCRIPTION")
+        print (result)
         return result
 
     def get_init_prompt(self) -> list:
@@ -61,7 +63,7 @@ class GPT_Attribute:
             prompt += item[0] + ", "
         prompt += "]\n"
         prompt += self.answer_style_guide + "\n"
-        prompt += self.att_list[0][0] + "=(your answer)"
+        prompt += self.att_list["soft"][0][0] + "=(your answer)"
         prompt += self.get_job_description()
         return self.set_simple(prompt)
 

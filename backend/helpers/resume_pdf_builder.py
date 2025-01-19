@@ -7,6 +7,7 @@ from reportlab.lib.styles import getSampleStyleSheet
 import os
 from . import resume_info
 from . import styles
+import io
 
 
 class ResumeBuilder:
@@ -90,9 +91,12 @@ class ResumeBuilder:
         builds the pdf
         """
         # Make the file path under Documents
-        documents_folder = os.path.join(os.path.expanduser("~"), "OneDrive", "Documents", "Resumes")
-        os.makedirs(documents_folder, exist_ok=True)
-        pdf_path = os.path.join(documents_folder, self.pdf_name)
+        if isinstance(self.pdf_name, io.BytesIO):
+            pdf_path = self.pdf_name
+        else:
+            documents_folder = os.path.join(os.path.expanduser("~"), "OneDrive", "Documents", "Resumes")
+            os.makedirs(documents_folder, exist_ok=True)
+            pdf_path = os.path.join(documents_folder, self.pdf_name)
         
         
         # REPORT LAB SPECIFIC

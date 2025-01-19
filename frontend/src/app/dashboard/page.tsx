@@ -120,7 +120,7 @@ export default function Dashboard() {
       <footer className="container mx-auto mt-16 border-t border-gray-200 px-4 py-8">
         <div className="flex flex-col items-center justify-between md:flex-row">
           <div className="mb-4 text-sm text-gray-600 md:mb-0">
-            © {new Date().getFullYear()} ResumeTailor. All rights reserved.
+            © {new Date().getFullYear()} WorkBringer. All rights reserved. Hoid was here
           </div>
           <div className="space-x-4">
             <a href="#" className="text-sm text-gray-600 hover:text-gray-900">

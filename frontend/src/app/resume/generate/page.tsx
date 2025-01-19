@@ -1,10 +1,12 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { redirect } from "next/navigation";
+import { set } from "zod";
 
 export default function ResumeGenerator() {
   const [pdfName, setPdfName] = useState("");
   const [jobDescription, setJobDescription] = useState("");
+  const [statusMessage, setStatusMessage] = useState("");
 
   const handlePdfNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPdfName(e.target.value);
@@ -16,6 +18,11 @@ export default function ResumeGenerator() {
     setJobDescription(e.target.value);
   };
   const onGenRequest = async () => {
+    if (!pdfName || !jobDescription) {
+      setStatusMessage("Please fill in all fields");
+      return;
+    }
+    setStatusMessage("Generating resume...");
     const response = await fetch("/generate", {
       method: "post",
       headers: {
@@ -26,7 +33,20 @@ export default function ResumeGenerator() {
         jobinfo: jobDescription,
       }),
     });
+    const blurb = await response.blob();
+    const url = URL.createObjectURL(blurb);
+    const a = document.createElement("a");
+    const contentDisposition = response.headers.get("Content-Disposition");
+    const filenameMatch = contentDisposition?.match(/filename="(.+)"/);
+    const filename = filenameMatch ? filenameMatch[1] : "default.pdf";
+    a.href = url;
+    a.download = filename || "default.pdf"; // Use the filename from the backend
+    document.body.appendChild(a);
+    a.click();
+      document.body.removeChild(a);
+      setStatusMessage("Resume generated successfully!");
   };
+  
 
   const goToDash = () => {
     redirect("/dashboard");
@@ -114,6 +134,7 @@ export default function ResumeGenerator() {
                 name="statusMessage"
                 rows={3}
                 readOnly
+                value={statusMessage}
                 className="mt-1 w-full rounded-md border border-gray-300 focus:border-pink-500 focus:ring-pink-500"
               />
             </div>

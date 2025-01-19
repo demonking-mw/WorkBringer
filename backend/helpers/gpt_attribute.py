@@ -9,6 +9,7 @@ from openai import OpenAI
 import os
 
 
+
 class GPT_Attribute:
     """
     set attribute list through gpt.
@@ -45,12 +46,10 @@ class GPT_Attribute:
             result += "JOB RESPONSIBILITIES: "
             result += self.job_resp + "\n"
             result += "REQUIRED SKILL: "
-            
             result += self.job_req + "\n"
         else:
             result = self.all_job_info
-        print("DEBUG: JOB DESCRIPTION")
-        print (result)
+
         return result
 
     def get_init_prompt(self) -> list:
@@ -63,7 +62,7 @@ class GPT_Attribute:
             prompt += item[0] + ", "
         prompt += "]\n"
         prompt += self.answer_style_guide + "\n"
-        prompt += self.att_list["soft"][0][0] + "=(your answer)"
+        prompt += self.att_list[0][0] + "=(your answer)"
         prompt += self.get_job_description()
         return self.set_simple(prompt)
 
@@ -88,16 +87,10 @@ class GPT_Attribute:
         """
         edits the att_list
         """
-        result = {"tech": [], "soft": [], "asset": []}
-        for item in self.att_list["tech"]:
+        result = []
+        for item in self.att_list:
             value = self.search_in_result(self.first_response, item[0])
-            result["tech"].append([item[0], value])
-        for item in self.att_list["soft"]:
-            value = self.search_in_result(self.first_response, item[0])
-            result["soft"].append([item[0], value])
-        for item in self.att_list["asset"]:
-            value = self.search_in_result(self.first_response, item[0])
-            result["asset"].append([item[0], value])
+            result.append([item[0], value])
         return result
 
     def __init__(
@@ -127,9 +120,9 @@ class GPT_Attribute:
         self.generate_debug_file()
 
     def generate_debug_file(self):
-        """
+        '''
         generate a file with gpt informations.
-        """
+        '''
         result = ""
         result += "QUERY:\n"
         result += self.get_job_description() + "\n\n"
@@ -137,18 +130,15 @@ class GPT_Attribute:
         result += str(self.gpt_modded_list) + "\n\n"
         result += "FULL RESPONSE:\n"
         result += str(self.first_response_dic)
-        result = result.encode("ascii", "ignore").decode("ascii")
-        documents_folder = os.path.join(
-            os.path.expanduser("~"), "OneDrive", "Documents", "Resumes"
-        )
+        result = result.encode('ascii', 'ignore').decode('ascii')
+        documents_folder = os.path.join(os.path.expanduser("~"), "OneDrive", "Documents", "Resumes")
         os.makedirs(documents_folder, exist_ok=True)
         counter = 1
-        while os.path.exists(
-            os.path.join(documents_folder, f"gpt_debug_{counter}.txt")
-        ):
+        while os.path.exists(os.path.join(documents_folder, f"gpt_debug_{counter}.txt")):
             counter += 1
         debug_file_name = f"gpt_debug_{counter}.txt"
         file_path = os.path.join(documents_folder, debug_file_name)
         print("DEBUG: ATTRIBUTE AT", file_path)
         with open(file_path, "w") as f:
             f.write(result)
+        
